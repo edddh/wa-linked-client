@@ -99,7 +99,11 @@ app.post("/api/sessions", requireAuth, async (req, res) => {
   }
   const r = await wahaFetch("/api/sessions", {
     method: "POST",
-    body: JSON.stringify({ name, start: true }),
+    body: JSON.stringify({
+      name,
+      start: true,
+      config: { noweb: { store: { enabled: true, fullSync: false } } },
+    }),
   });
   const body = await r.json().catch(() => ({}));
   res.status(r.status).json(body);
@@ -136,6 +140,12 @@ app.get("/api/sessions/:session/qr", requireAuth, requireValidSessionName, async
   if (!r.ok) return res.status(r.status).end();
   res.setHeader("Content-Type", "image/png");
   res.send(Buffer.from(await r.arrayBuffer()));
+});
+
+app.get("/api/sessions/:session/profile", requireAuth, requireValidSessionName, async (req, res) => {
+  const r = await wahaFetch(`/api/${req.params.session}/profile`);
+  const body = await r.json().catch(() => ({}));
+  res.status(r.status).json(body);
 });
 
 // --- Chats & messages (per account) ---
@@ -225,14 +235,23 @@ app.post(
 );
 
 app.get("/api/media/proxy", requireAuth, async (req, res) => {
-  let target = req.query.url;
+  const target = req.query.url;
   if (!target || typeof target !== "string") return res.status(400).end();
-  if (target.startsWith(WAHA_URL)) {
-    target = target.slice(WAHA_URL.length);
-  } else if (!target.startsWith("/")) {
-    return res.status(400).end();
+  let relativePath;
+  if (target.startsWith("/")) {
+    relativePath = target;
+  } else {
+    try {
+      const u = new URL(target);
+      relativePath = u.pathname + u.search;
+    } catch {
+      return res.status(400).end();
+    }
   }
-  const r = await wahaFetch(target);
+  // relativePath is always re-fetched against our own WAHA_URL, never the
+  // host embedded in the client-supplied url, so this can't be used as an
+  // open proxy to arbitrary hosts.
+  const r = await wahaFetch(relativePath);
   if (!r.ok) return res.status(r.status).end();
   res.setHeader("Content-Type", r.headers.get("content-type") || "application/octet-stream");
   res.send(Buffer.from(await r.arrayBuffer()));

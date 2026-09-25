@@ -1,4 +1,4 @@
-const CACHE = "wa-client-v1";
+const CACHE = "wa-client-v3";
 const SHELL = ["/", "/style.css", "/app.js", "/manifest.json"];
 
 self.addEventListener("install", (event) => {
