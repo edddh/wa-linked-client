@@ -1,0 +1,33 @@
+services:
+  waha:
+    image: devlikeapro/waha:latest
+    restart: unless-stopped
+    environment:
+      WHATSAPP_DEFAULT_ENGINE: NOWEB
+      WAHA_API_KEY: ${WAHA_API_KEY}
+      WAHA_LOG_LEVEL: error
+    volumes:
+      - waha_sessions:/app/.sessions
+    ports:
+      - "127.0.0.1:3010:3000"
+    mem_limit: 700m
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    restart: unless-stopped
+    environment:
+      WAHA_URL: http://waha:3000
+      WAHA_API_KEY: ${WAHA_API_KEY}
+      APP_PASSWORD: ${APP_PASSWORD}
+      SESSION_SECRET: ${SESSION_SECRET}
+      PORT: 3000
+    depends_on:
+      - waha
+    ports:
+      - "127.0.0.1:3011:3000"
+    mem_limit: 150m
+
+volumes:
+  waha_sessions:

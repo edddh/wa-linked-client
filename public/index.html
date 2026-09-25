@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>WA Client</title>
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#111b21" />
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Accounts screen -->
+    <section id="accounts-screen" class="screen" hidden>
+      <header class="top-bar">
+        <h1>Account WhatsApp</h1>
+        <button id="logout-btn" class="icon-btn" title="Esci">&#9211;</button>
+      </header>
+      <ul id="account-list" class="chat-list"></ul>
+      <button id="add-account-btn" class="add-account-btn">+ Aggiungi account</button>
+    </section>
+
+    <!-- Setup / QR screen -->
+    <section id="setup-screen" class="screen" hidden>
+      <header class="top-bar">
+        <button id="setup-back-btn" class="icon-btn">&larr;</button>
+        <h1 id="setup-title">Collega WhatsApp</h1>
+      </header>
+      <div class="setup-card">
+        <p id="setup-status">Verifica in corso...</p>
+        <img id="qr-image" alt="QR code" hidden />
+        <button id="refresh-qr" hidden>Aggiorna QR</button>
+      </div>
+    </section>
+
+    <!-- Chat list screen -->
+    <section id="chats-screen" class="screen" hidden>
+      <header class="top-bar">
+        <button id="chats-back-btn" class="icon-btn">&larr;</button>
+        <h1 id="chats-title">Chat</h1>
+      </header>
+      <ul id="chat-list" class="chat-list"></ul>
+    </section>
+
+    <!-- Thread screen -->
+    <section id="thread-screen" class="screen" hidden>
+      <header class="top-bar">
+        <button id="back-btn" class="icon-btn">&larr;</button>
+        <h1 id="thread-title">Chat</h1>
+      </header>
+      <div id="messages" class="messages"></div>
+      <form id="send-form" class="send-bar">
+        <button type="button" id="attach-btn" class="icon-btn" title="Allega file">&#128206;</button>
+        <input id="file-input" type="file" hidden />
+        <input id="text-input" type="text" placeholder="Scrivi un messaggio" autocomplete="off" />
+        <button type="submit">Invia</button>
+      </form>
+    </section>
+  </div>
+  <script src="/app.js"></script>
+</body>
+</html>
